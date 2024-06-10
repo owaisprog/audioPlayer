@@ -211,7 +211,7 @@ const AudioPlayer = () => {
           ) : (
             <Loader text={"File is Uploading Please wait!"} />
           )}
-          <div className="container mx-auto flex flex-col md:flex-row gap-8 justify-center items-center">
+          <div className="container mx-auto flex mt-6 flex-col md:flex-row gap-8 justify-center items-center">
             <label
               htmlFor="audioFile"
               className={`bg-no-repeat ${
