@@ -19,24 +19,29 @@ const Controls = () => {
   const decreasePitch = () =>
     parseFloat(pitch).toFixed(2) <= 0.75 ? changePitch(0.75) : decrePitch();
   const increSpeed = () => {
-    const value = Number(parseFloat(tempo + 0.15).toFixed(2));
+    const value = Number(parseFloat(tempo + 0.05).toFixed(2));
     changeTempo(value);
   };
   const decreSpeed = () => {
-    const value = Number(parseFloat(tempo - 0.15).toFixed(2));
+    const value = Number(parseFloat(tempo - 0.05).toFixed(2));
     changeTempo(value);
   };
   const increaseSpeed = () =>
     parseFloat(tempo).toFixed(2) >= 1.50 ? changeTempo(1.50) : increSpeed();
   const decreaseSpeed = () =>
     parseFloat(tempo).toFixed(2) <= 0.50 ? changeTempo(0.50) : decreSpeed();
-
+// Function to map the value from the range of 0.75-1.50 to -6 to 6
+const mapPitchToDisplay = (pitch) => {
+  return Math.round((pitch - 1) * 16);
+};
+  // Mapped display value
+  const displayValue = mapPitchToDisplay(pitch);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
       <div className="bg-[#abc481] p-4 rounded-lg">
         <h3 className="font-bold text-black">
           Pitch:{" "}
-          <span id="pitchValue">{parseFloat(pitch).toFixed(2)} semitones</span>
+          <span id="pitchValue">{displayValue} semitones</span>
         </h3>
         <div className="flex justify-center mt-4 space-x-4">
           <button
