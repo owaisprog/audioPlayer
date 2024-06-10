@@ -15,7 +15,7 @@ const Controls = () => {
     changePitch(value);
   };
   const increasePitch = () =>
-    parseFloat(pitch).toFixed(2) >= 1.50 ? changePitch(1.50) : increPitch();
+    parseFloat(pitch).toFixed(2) >= 1.5 ? changePitch(1.5) : increPitch();
   const decreasePitch = () =>
     parseFloat(pitch).toFixed(2) <= 0.75 ? changePitch(0.75) : decrePitch();
   const increSpeed = () => {
@@ -27,21 +27,20 @@ const Controls = () => {
     changeTempo(value);
   };
   const increaseSpeed = () =>
-    parseFloat(tempo).toFixed(2) >= 1.50 ? changeTempo(1.50) : increSpeed();
+    parseFloat(tempo).toFixed(2) >= 1.5 ? changeTempo(1.5) : increSpeed();
   const decreaseSpeed = () =>
-    parseFloat(tempo).toFixed(2) <= 0.50 ? changeTempo(0.50) : decreSpeed();
-// Function to map the value from the range of 0.75-1.50 to -6 to 6
-const mapPitchToDisplay = (pitch) => {
-  return Math.round((pitch - 1) * 16);
-};
+    parseFloat(tempo).toFixed(2) <= 0.5 ? changeTempo(0.5) : decreSpeed();
+  // Function to map the value from the range of 0.75-1.50 to -6 to 6
+  const mapPitchToDisplay = (pitch) => {
+    return Math.round((pitch - 1) * 16);
+  };
   // Mapped display value
   const displayValue = mapPitchToDisplay(pitch);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
       <div className="bg-[#abc481] p-4 rounded-lg">
         <h3 className="font-bold text-black">
-          Pitch:{" "}
-          <span id="pitchValue">{displayValue} semitones</span>
+          Pece: <span id="pitchValue">{displayValue} semitoni</span>
         </h3>
         <div className="flex justify-center mt-4 space-x-4">
           <button
@@ -49,7 +48,7 @@ const mapPitchToDisplay = (pitch) => {
             onClick={increasePitch}
             className="flex items-center bg-[#94ac64] text-white p-2 rounded-lg"
           >
-            Increase Pitch
+            Aumenta il tono
             <FaPlusCircle className="ml-2" size={40} />
           </button>
           <button
@@ -57,14 +56,15 @@ const mapPitchToDisplay = (pitch) => {
             onClick={decreasePitch}
             className="flex items-center bg-[#94ac64] text-white p-2 rounded-lg"
           >
-            Decrease Pitch
+            Diminuire il tono
             <FaMinusCircle className="ml-2" size={40} />
           </button>
         </div>
       </div>
       <div className="bg-[#ffde94] p-4 rounded-lg">
         <h3 className="font-bold text-black">
-          Speed: <span id="speedDisplay">{parseFloat(tempo).toFixed(2)}x</span>
+          Velocità:{" "}
+          <span id="speedDisplay">{parseFloat(tempo).toFixed(2)}x</span>
         </h3>
         <div className="flex justify-center mt-4 space-x-4">
           <button
@@ -72,7 +72,7 @@ const mapPitchToDisplay = (pitch) => {
             onClick={increaseSpeed}
             className="flex items-center bg-[#d4b364] text-white p-2 rounded-lg"
           >
-            Increase Speed
+            Aumentare la velocità
             <FaPlusCircle className="ml-2" size={40} />
           </button>
           <button
@@ -80,7 +80,7 @@ const mapPitchToDisplay = (pitch) => {
             onClick={decreaseSpeed}
             className="flex items-center bg-[#d4b364] text-white p-2 rounded-lg"
           >
-            Decrease Speed
+            Diminuire la velocità
             <FaMinusCircle className="ml-2" size={40} />
           </button>
         </div>

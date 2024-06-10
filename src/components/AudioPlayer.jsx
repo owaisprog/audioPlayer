@@ -209,7 +209,7 @@ const AudioPlayer = () => {
               </div>
             </div>
           ) : (
-            <Loader text={"File is Uploading Please wait!"} />
+            <Loader text={"Il file è in caricamento Attendi prego!"} />
           )}
           <div className="container mx-auto flex mt-6 flex-col md:flex-row gap-8 justify-center items-center">
             <label
