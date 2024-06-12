@@ -13,7 +13,8 @@ export default function DownloadOptionsModal() {
   const downloadAudioInWAV = async () => {
     if (recordedFile) {
       if (recordedFile.size > 0) {
-        saveAs(recordedFile, `${audioFileName}_adtta.wav`);
+        console.log(recordedFile);
+        saveAs(recordedFile);
         setIsDModal(!isDModal);
       } else {
         console.error("Recorded file is empty or corrupted");
@@ -26,7 +27,7 @@ export default function DownloadOptionsModal() {
       if (recordedFile.size > 0) {
         try {
           // Save the MP3 file
-          saveAs(recordedFile, `${audioFileName}_adtta.mp3`);
+          saveAs(recordedFile, "recording.mp3");
           setIsDModal(!isDModal);
         } catch (error) {
           console.error("Error downloading MP3:", error);
