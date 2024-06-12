@@ -23,6 +23,7 @@ export const PlayerProvider = ({ audioCtx, gainNode, ...props }) => {
   const [shifter, setShifter] = useState();
   const [isDModal, setIsDModal] = useState(false);
   const [recordedFile, setRecordedFile] = useState(false);
+  const [recordedWAVFile, setRecordedWAVFile] = useState(false);
   const [audioFileName, setAudioFileName] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
 
@@ -36,6 +37,8 @@ export const PlayerProvider = ({ audioCtx, gainNode, ...props }) => {
       setIsDModal,
       recordedFile,
       setRecordedFile,
+      recordedWAVFile,
+      setRecordedWAVFile,
       audioFileName,
       setAudioFileName,
       isRecording,
@@ -74,6 +77,8 @@ export const PlayerProvider = ({ audioCtx, gainNode, ...props }) => {
       setRecordedFile,
       audioFileName,
       setAudioFileName,
+      recordedWAVFile,
+      setRecordedWAVFile,
       isRecording,
       setIsRecording,
       tempo,
@@ -111,6 +116,8 @@ export const usePlayer = () => {
     isDModal,
     setIsDModal,
     recordedFile,
+    recordedWAVFile,
+    setRecordedWAVFile,
     setRecordedFile,
     audioFileName,
     setAudioFileName,
@@ -135,11 +142,8 @@ export const usePlayer = () => {
     shifter,
     setShifter,
   } = useContext(PlayerContext);
-  const mediaRecorderRef = useRef(null);
-  const recorderRef = useRef(null);
-  const audioChunksRef = useRef([]);
-  const playbackGainNodeRef = useRef(audioCtx.createGain());
-  const recordingGainNodeRef = useRef(audioCtx.createGain());
+  const recorderMP3Ref = useRef(null);
+  const recorderWAVRef = useRef(null);
   const onPlay = ({ formattedTimePlayed, percentagePlayed }) => {
     setPlayHead(formattedTimePlayed);
     setProgress(percentagePlayed);
@@ -225,49 +229,6 @@ export const usePlayer = () => {
       setTempo(1.0);
     }
   };
-  // const recordAudio = async () => {
-  //   setIsRecording(true);
-  //   setPlaying(false);
-  //   pauseAudio();
-  //   shifter.percentagePlayed = 0; // Reset shifter's position to the start
-  //   setProgress(0);
-  //   setPlayHead("0:00");
-  //   // Set up MediaRecorder to record the audio
-  //   const destination = audioCtx.createMediaStreamDestination();
-  //   gainNode.connect(destination);
-
-  //   mediaRecorderRef.current = new MediaRecorder(destination.stream);
-  //   mediaRecorderRef.current.ondataavailable = (event) => {
-  //     if (event.data.size > 0) {
-  //       audioChunksRef.current.push(event.data);
-  //     }
-  //   };
-  //   mediaRecorderRef.current.onstop = () => {
-  //     const blob = new Blob(audioChunksRef.current, { type: "audio/wav" });
-  //     setRecordedFile(blob);
-  //     audioChunksRef.current = [];
-  //   };
-
-  //   setPlaying(true);
-  //   shifter.connect(gainNode);
-  //   gainNode.connect(audioCtx.destination);
-  //   audioCtx.resume();
-
-  //   setTimeout(() => {
-  //     mediaRecorderRef.current.start();
-  //   }, 1000);
-  //   // Check shifter.percentagePlayed every second
-  //   const intervalId = setInterval(async () => {
-  //     if (Math.round(shifter.percentagePlayed) === 100) {
-  //       clearInterval(intervalId); // Stop checking once condition is met
-  //       pauseAudio();
-  //       setProgress(0);
-  //       setPlayHead("0:00");
-  //       stopAudioRecording();
-  //     }
-  //   }, 500); // Check every 1000 ms (1 second)
-  // };
-
   const recordAudio = () => {
     setIsRecording(true);
     setPlaying(false);
@@ -279,9 +240,15 @@ export const usePlayer = () => {
     const destination = audioCtx.createMediaStreamDestination();
     gainNode.connect(destination);
 
-    recorderRef.current = RecordRTC(destination.stream, {
+    recorderWAVRef.current = RecordRTC(destination.stream, {
       type: "audio",
       mimeType: "audio/wav",
+      recorderType: RecordRTC.StereoAudioRecorder,
+      desiredSampRate: 16000,
+    });
+    recorderMP3Ref.current = RecordRTC(destination.stream, {
+      type: "audio",
+      mimeType: "audio/mp3",
       recorderType: RecordRTC.StereoAudioRecorder,
       desiredSampRate: 16000,
     });
@@ -291,7 +258,8 @@ export const usePlayer = () => {
     gainNode.connect(audioCtx.destination);
     audioCtx.resume();
     setTimeout(() => {
-      recorderRef.current.startRecording();
+      recorderMP3Ref.current.startRecording();
+      recorderWAVRef.current.startRecording();
     }, 1000);
     // Check shifter.percentagePlayed every second
     const intervalId = setInterval(() => {
@@ -305,18 +273,18 @@ export const usePlayer = () => {
     }, 500); // Check every 500 ms (0.5 second)
   };
 
-  // const stopAudioRecording = async () => {
-  //   setIsRecording(false);
-  //   if (mediaRecorderRef.current) {
-  //     mediaRecorderRef.current.stop();
-  //   }
-  // };
   const stopAudioRecording = async () => {
     setIsRecording(false);
-    if (recorderRef.current) {
-      recorderRef.current.stopRecording(() => {
-        const blob = recorderRef.current.getBlob();
+    if (recorderMP3Ref.current) {
+      recorderMP3Ref.current.stopRecording(() => {
+        const blob = recorderMP3Ref.current.getBlob();
         setRecordedFile(blob);
+      });
+    }
+    if (recorderWAVRef.current) {
+      recorderWAVRef.current.stopRecording(() => {
+        const blob = recorderWAVRef.current.getBlob();
+        setRecordedWAVFile(blob);
       });
     }
   };
@@ -338,6 +306,7 @@ export const usePlayer = () => {
     isDModal,
     setIsDModal,
     recordedFile,
+    recordedWAVFile,
     audioFileName,
     isRecording,
     duration,

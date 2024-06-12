@@ -7,25 +7,25 @@ import {
 } from "@headlessui/react";
 import { saveAs } from "file-saver";
 import { usePlayer } from "../Player.context";
-import audioConverter from "audio-converter";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
 export default function DownloadOptionsModal() {
-  const { recordedFile, isDModal, setIsDModal, audioFileName } = usePlayer();
+  const {
+    recordedFile,
+    recordedWAVFile,
+    isDModal,
+    setIsDModal,
+    audioFileName,
+  } = usePlayer();
 
   const downloadAudioInWAV = async () => {
     if (recordedFile) {
       if (recordedFile.size > 0) {
-        saveAs(recordedFile, `${audioFileName}_adtta.wav`);
+        saveAs(recordedWAVFile, `${audioFileName}_adtta.wav`);
         setIsDModal(!isDModal);
       } else {
         console.error("Recorded file is empty or corrupted");
       }
-    }                                                                                                                   
-  };
-
-  const convertToMP3 = async (wavBlob) => {
-    const mp3Blob = await audioConverter(wavBlob, "mp3");
-    return mp3Blob;
+    }
   };
 
   const downloadAudioInMP3 = async () => {
@@ -33,8 +33,8 @@ export default function DownloadOptionsModal() {
       if (recordedFile.size > 0) {
         try {
           // Convert the WAV file to MP3 and save it
-          const blob = await convertToMP3(recordedFile);
-          saveAs(blob, `${audioFileName}_adtta.mp3`);
+          // const blob = await convertToMP3(recordedFile);
+          saveAs(recordedFile, `${audioFileName}_adtta.mp3`);
           setIsDModal(!isDModal);
         } catch (error) {
           console.error("Error downloading MP3:", error);
