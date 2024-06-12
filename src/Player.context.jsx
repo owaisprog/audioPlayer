@@ -286,13 +286,13 @@ export const usePlayer = () => {
       desiredSampRate: 16000,
     });
 
-    recorderRef.current.startRecording();
-
     setPlaying(true);
     shifter.connect(gainNode);
     gainNode.connect(audioCtx.destination);
     audioCtx.resume();
-
+    setTimeout(() => {
+      recorderRef.current.startRecording();
+    }, 1000);
     // Check shifter.percentagePlayed every second
     const intervalId = setInterval(() => {
       if (Math.round(shifter.percentagePlayed) === 100) {
