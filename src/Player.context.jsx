@@ -5,6 +5,7 @@ import React, {
   useContext,
   useRef,
 } from "react";
+import RecordRTC from "recordrtc";
 import { PitchShifter } from "soundtouchjs";
 export const PlayerContext = createContext();
 
@@ -135,6 +136,7 @@ export const usePlayer = () => {
     setShifter,
   } = useContext(PlayerContext);
   const mediaRecorderRef = useRef(null);
+  const recorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const playbackGainNodeRef = useRef(audioCtx.createGain());
   const recordingGainNodeRef = useRef(audioCtx.createGain());
@@ -223,39 +225,76 @@ export const usePlayer = () => {
       setTempo(1.0);
     }
   };
-  const recordAudio = async () => {
+  // const recordAudio = async () => {
+  //   setIsRecording(true);
+  //   setPlaying(false);
+  //   pauseAudio();
+  //   shifter.percentagePlayed = 0; // Reset shifter's position to the start
+  //   setProgress(0);
+  //   setPlayHead("0:00");
+  //   // Set up MediaRecorder to record the audio
+  //   const destination = audioCtx.createMediaStreamDestination();
+  //   gainNode.connect(destination);
+
+  //   mediaRecorderRef.current = new MediaRecorder(destination.stream);
+  //   mediaRecorderRef.current.ondataavailable = (event) => {
+  //     if (event.data.size > 0) {
+  //       audioChunksRef.current.push(event.data);
+  //     }
+  //   };
+  //   mediaRecorderRef.current.onstop = () => {
+  //     const blob = new Blob(audioChunksRef.current, { type: "audio/wav" });
+  //     setRecordedFile(blob);
+  //     audioChunksRef.current = [];
+  //   };
+
+  //   setPlaying(true);
+  //   shifter.connect(gainNode);
+  //   gainNode.connect(audioCtx.destination);
+  //   audioCtx.resume();
+
+  //   setTimeout(() => {
+  //     mediaRecorderRef.current.start();
+  //   }, 1000);
+  //   // Check shifter.percentagePlayed every second
+  //   const intervalId = setInterval(async () => {
+  //     if (Math.round(shifter.percentagePlayed) === 100) {
+  //       clearInterval(intervalId); // Stop checking once condition is met
+  //       pauseAudio();
+  //       setProgress(0);
+  //       setPlayHead("0:00");
+  //       stopAudioRecording();
+  //     }
+  //   }, 500); // Check every 1000 ms (1 second)
+  // };
+
+  const recordAudio = () => {
     setIsRecording(true);
     setPlaying(false);
     pauseAudio();
     shifter.percentagePlayed = 0; // Reset shifter's position to the start
     setProgress(0);
     setPlayHead("0:00");
-    // Set up MediaRecorder to record the audio
+
     const destination = audioCtx.createMediaStreamDestination();
     gainNode.connect(destination);
 
-    mediaRecorderRef.current = new MediaRecorder(destination.stream);
-    mediaRecorderRef.current.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        audioChunksRef.current.push(event.data);
-      }
-    };
-    mediaRecorderRef.current.onstop = () => {
-      const blob = new Blob(audioChunksRef.current, { type: "audio/wav" });
-      setRecordedFile(blob);
-      audioChunksRef.current = [];
-    };
+    recorderRef.current = RecordRTC(destination.stream, {
+      type: "audio",
+      mimeType: "audio/wav",
+      recorderType: RecordRTC.StereoAudioRecorder,
+      desiredSampRate: 16000,
+    });
+
+    recorderRef.current.startRecording();
 
     setPlaying(true);
     shifter.connect(gainNode);
     gainNode.connect(audioCtx.destination);
     audioCtx.resume();
 
-    setTimeout(() => {
-      mediaRecorderRef.current.start();
-    }, 1000);
     // Check shifter.percentagePlayed every second
-    const intervalId = setInterval(async () => {
+    const intervalId = setInterval(() => {
       if (Math.round(shifter.percentagePlayed) === 100) {
         clearInterval(intervalId); // Stop checking once condition is met
         pauseAudio();
@@ -263,16 +302,24 @@ export const usePlayer = () => {
         setPlayHead("0:00");
         stopAudioRecording();
       }
-    }, 500); // Check every 1000 ms (1 second)
+    }, 500); // Check every 500 ms (0.5 second)
   };
 
+  // const stopAudioRecording = async () => {
+  //   setIsRecording(false);
+  //   if (mediaRecorderRef.current) {
+  //     mediaRecorderRef.current.stop();
+  //   }
+  // };
   const stopAudioRecording = async () => {
     setIsRecording(false);
-    if (mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop();
+    if (recorderRef.current) {
+      recorderRef.current.stopRecording(() => {
+        const blob = recorderRef.current.getBlob();
+        setRecordedFile(blob);
+      });
     }
   };
-
   const toggleMute = () => {
     if (gainNode) {
       if (isMute) {
