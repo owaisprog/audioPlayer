@@ -34,55 +34,55 @@ const Controls = () => {
   const mapPitchToDisplay = (pitch) => {
     return Math.round((pitch - 1) * 16);
   };
-  // Mapped display value
-  const displayValue = mapPitchToDisplay(pitch);
+  // Function to map the tempo value from the range of 0.5-1.5 to -6 to 6
+  const mapSpeedToDisplay = (speed) => {
+    return Math.round((speed - 1) * 12);
+  };
+  // Function to format the display value with a plus or minus sign
+  const formatDisplayValue = (value) => {
+    return value > 0 ? `+${value}` : `${value}`;
+  };
+  // Mapped display values
+  const pitchDisplayValue = formatDisplayValue(mapPitchToDisplay(pitch));
+  const speedDisplayValue = formatDisplayValue(mapSpeedToDisplay(tempo));
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
       <div className="bg-[#abc481] p-4 rounded-lg">
-        <h3 className="font-bold text-black">
-          Pece: <span id="pitchValue">{displayValue} semitoni</span>
+        <h3 className="font-medium text-2xl md:text-4xl text-black">
+          Altezza: <span id="pitchValue">{pitchDisplayValue}</span>
         </h3>
         <div className="flex justify-center mt-4 space-x-4">
           <button
             disabled={isRecording}
             onClick={increasePitch}
-            className="flex items-center bg-[#94ac64] text-white p-2 rounded-lg"
-          >
-            Aumenta il tono
-            <FaPlusCircle className="ml-2" size={40} />
-          </button>
+            className={` bg-no-repeat bg-contain w-56 h-16 md:h-24 opacity-100`}
+            style={{ backgroundImage: "url('elementi/Risorsa 8-8.png')" }}
+          ></button>
           <button
             disabled={isRecording}
             onClick={decreasePitch}
-            className="flex items-center bg-[#94ac64] text-white p-2 rounded-lg"
-          >
-            Diminuire il tono
-            <FaMinusCircle className="ml-2" size={40} />
-          </button>
+            className={` bg-no-repeat bg-contain w-56 h-16 md:h-24 opacity-100`}
+            style={{ backgroundImage: "url('elementi/Risorsa 9-8.png')" }}
+          ></button>
         </div>
       </div>
       <div className="bg-[#ffde94] p-4 rounded-lg">
-        <h3 className="font-bold text-black">
-          Velocità:{" "}
-          <span id="speedDisplay">{parseFloat(tempo).toFixed(2)}x</span>
+        <h3 className="font-medium text-2xl md:text-4xl text-black">
+          Velocità: <span id="speedDisplay">{speedDisplayValue}</span>
         </h3>
         <div className="flex justify-center mt-4 space-x-4">
           <button
             disabled={isRecording}
             onClick={increaseSpeed}
-            className="flex items-center bg-[#d4b364] text-white p-2 rounded-lg"
-          >
-            Aumentare la velocità
-            <FaPlusCircle className="ml-2" size={40} />
-          </button>
+            className={` bg-no-repeat bg-contain w-56 h-16 lg:h-24 opacity-100`}
+            style={{ backgroundImage: "url('elementi/Risorsa 10-8.png')" }}
+          ></button>
           <button
             disabled={isRecording}
             onClick={decreaseSpeed}
-            className="flex items-center bg-[#d4b364] text-white p-2 rounded-lg"
-          >
-            Diminuire la velocità
-            <FaMinusCircle className="ml-2" size={40} />
-          </button>
+            className={` bg-no-repeat bg-contain w-56 h-16 lg:h-24 opacity-100`}
+            style={{ backgroundImage: "url('elementi/Risorsa 11-8.png')" }}
+          ></button>
         </div>
       </div>
     </div>

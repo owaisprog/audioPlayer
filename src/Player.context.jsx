@@ -136,7 +136,8 @@ export const usePlayer = () => {
   } = useContext(PlayerContext);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
-
+  const playbackGainNodeRef = useRef(audioCtx.createGain());
+  const recordingGainNodeRef = useRef(audioCtx.createGain());
   const onPlay = ({ formattedTimePlayed, percentagePlayed }) => {
     setPlayHead(formattedTimePlayed);
     setProgress(percentagePlayed);
@@ -249,6 +250,7 @@ export const usePlayer = () => {
     shifter.connect(gainNode);
     gainNode.connect(audioCtx.destination);
     audioCtx.resume();
+
     setTimeout(() => {
       mediaRecorderRef.current.start();
     }, 1000);
