@@ -7,9 +7,11 @@ import {
 } from "@headlessui/react";
 import { saveAs } from "file-saver";
 import { usePlayer } from "../Player.context";
-import lamejs from "lamejs";
+import audioConverter from "audio-converter";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+
 export default function DownloadOptionsModal() {
   const { recordedFile, isDModal, setIsDModal, audioFileName } = usePlayer();
+
   const downloadAudioInWAV = async () => {
     if (recordedFile) {
       if (recordedFile.size > 0) {
@@ -18,56 +20,23 @@ export default function DownloadOptionsModal() {
       } else {
         console.error("Recorded file is empty or corrupted");
       }
-    }
+    }                                                                                                                   
   };
+
   const convertToMP3 = async (wavBlob) => {
-    console.log(wavBlob);
-    // Alternative method to read Blob as ArrayBuffer using FileReader
-    const arrayBuffer = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(reader.error);
-      reader.readAsArrayBuffer(wavBlob);
-      console.log(reader);
-    });
-    console.log(arrayBuffer);
-    const wav = lamejs.WavHeader.readHeader(new DataView(arrayBuffer));
-    const samples = new Int16Array(
-      arrayBuffer,
-      wav.dataOffset,
-      wav.dataLen / 2
-    );
-
-    const mp3Encoder = new lamejs.Mp3Encoder(wav.channels, wav.sampleRate, 128);
-    const mp3Data = [];
-    const sampleBlockSize = 1152;
-
-    for (let i = 0; i < samples.length; i += sampleBlockSize) {
-      const sampleChunk = samples.subarray(i, i + sampleBlockSize);
-      const mp3buf = mp3Encoder.encodeBuffer(sampleChunk);
-      if (mp3buf.length > 0) {
-        mp3Data.push(mp3buf);
-      }
-    }
-
-    const mp3buf = mp3Encoder.flush();
-    if (mp3buf.length > 0) {
-      mp3Data.push(mp3buf);
-    }
-
-    const blob = new Blob(mp3Data, { type: "audio/mp3" });
-    return blob;
+    const mp3Blob = await audioConverter(wavBlob, "mp3");
+    return mp3Blob;
   };
+
   const downloadAudioInMP3 = async () => {
     if (recordedFile) {
       if (recordedFile.size > 0) {
         try {
-          // Save the MP3 file
+          // Convert the WAV file to MP3 and save it
           const blob = await convertToMP3(recordedFile);
           saveAs(blob, `${audioFileName}_adtta.mp3`);
           setIsDModal(!isDModal);
         } catch (error) {
-          console.log(error);
           console.error("Error downloading MP3:", error);
         }
       } else {
