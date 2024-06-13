@@ -7,7 +7,7 @@ import {
 } from "@headlessui/react";
 import { saveAs } from "file-saver";
 import { usePlayer } from "../Player.context";
-
+import lamejs from "lamejs";
 export default function DownloadOptionsModal() {
   const {
     recordedFile,
@@ -16,10 +16,40 @@ export default function DownloadOptionsModal() {
     setIsDModal,
     audioFileName,
   } = usePlayer();
+  // async function convertWavToMp3(wavBlob) {
+  //   const arrayBuffer = await wavBlob.arrayBuffer();
+  //   console.log(wavBlob)
+  //   const wav = lamejs.WavHeader.readHeader(new DataView(arrayBuffer));
+  //   const samples = new Int16Array(
+  //     arrayBuffer,
+  //     wav.dataOffset,
+  //     wav.dataLen / 2
+  //   );
 
+  //   const mp3Encoder = new lamejs.Mp3Encoder(wav.channels, wav.sampleRate, 128);
+  //   const mp3Data = [];
+  //   const sampleBlockSize = 1152;
+
+  //   for (let i = 0; i < samples.length; i += sampleBlockSize) {
+  //     const sampleChunk = samples.subarray(i, i + sampleBlockSize);
+  //     const mp3buf = mp3Encoder.encodeBuffer(sampleChunk);
+  //     if (mp3buf.length > 0) {
+  //       mp3Data.push(mp3buf);
+  //     }
+  //   }
+
+  //   const mp3buf = mp3Encoder.flush();
+  //   if (mp3buf.length > 0) {
+  //     mp3Data.push(mp3buf);
+  //   }
+
+  //   return new Blob(mp3Data, { type: "audio/mp3" });
+  // }
   const downloadAudioInWAV = async () => {
     if (recordedFile) {
       if (recordedFile.size > 0) {
+        // const blob = await convertWavToMp3(recordedFile);
+        // console.log(blob);
         saveAs(recordedWAVFile, `${audioFileName}_adtta.wav`);
         setIsDModal(!isDModal);
       } else {
