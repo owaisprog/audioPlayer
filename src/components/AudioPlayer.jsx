@@ -284,7 +284,7 @@ const AudioPlayer = () => {
       {!shifter && (
         <Loader text={"Iniziamo! Carica un file audio"} loader={false} />
       )}
-      {shifter && !isRecording && (
+      {shifter && !isRecording && !recordedFile && (
         <Loader
           text={"File caricato! Modificalo e poi registra le modifiche"}
           loader={false}
@@ -292,8 +292,14 @@ const AudioPlayer = () => {
       )}
       {isRecording && (
         <Loader
-          text={"File caricato! Modificalo e poi registra le modifiche"}
+          // text={"File caricato! Modificalo e poi registra le modifiche"}
           loader={true}
+        />
+      )}
+      {recordedFile && (
+        <Loader
+          text={"Fatto! Puoi scaricare il file modificato"}
+          loader={false}
         />
       )}
     </div>

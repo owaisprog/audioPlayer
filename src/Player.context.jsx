@@ -236,41 +236,40 @@ export const usePlayer = () => {
     shifter.percentagePlayed = 0; // Reset shifter's position to the start
     setProgress(0);
     setPlayHead("0:00");
-
-    const destination = audioCtx.createMediaStreamDestination();
-    gainNode.connect(destination);
-
-    recorderWAVRef.current = RecordRTC(destination.stream, {
-      type: "audio",
-      mimeType: "audio/wav",
-      recorderType: RecordRTC.StereoAudioRecorder,
-      desiredSampRate: 16000,
-    });
-    recorderMP3Ref.current = RecordRTC(destination.stream, {
-      type: "audio",
-      mimeType: "audio/mp3",
-      recorderType: RecordRTC.StereoAudioRecorder,
-      desiredSampRate: 16000,
-    });
-
-    setPlaying(true);
-    shifter.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    audioCtx.resume();
     setTimeout(() => {
+      const destination = audioCtx.createMediaStreamDestination();
+      gainNode.connect(destination);
+
+      recorderWAVRef.current = RecordRTC(destination.stream, {
+        type: "audio",
+        mimeType: "audio/wav",
+        recorderType: RecordRTC.StereoAudioRecorder,
+        desiredSampRate: 16000,
+      });
+      recorderMP3Ref.current = RecordRTC(destination.stream, {
+        type: "audio",
+        mimeType: "audio/mp3",
+        recorderType: RecordRTC.StereoAudioRecorder,
+        desiredSampRate: 16000,
+      });
+
+      setPlaying(true);
+      shifter.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      audioCtx.resume();
       recorderMP3Ref.current.startRecording();
       recorderWAVRef.current.startRecording();
-    }, 1000);
-    // Check shifter.percentagePlayed every second
-    const intervalId = setInterval(() => {
-      if (Math.round(shifter.percentagePlayed) === 100) {
-        clearInterval(intervalId); // Stop checking once condition is met
-        pauseAudio();
-        setProgress(0);
-        setPlayHead("0:00");
-        stopAudioRecording();
-      }
-    }, 500); // Check every 500 ms (0.5 second)
+      // Check shifter.percentagePlayed every second
+      const intervalId = setInterval(() => {
+        if (Math.round(shifter.percentagePlayed) === 100) {
+          clearInterval(intervalId); // Stop checking once condition is met
+          pauseAudio();
+          setProgress(0);
+          setPlayHead("0:00");
+          stopAudioRecording();
+        }
+      }, 500); // Check every 500 ms (0.5 second)
+    }, 2000);
   };
 
   const stopAudioRecording = async () => {
