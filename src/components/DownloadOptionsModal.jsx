@@ -7,7 +7,7 @@ import {
 } from "@headlessui/react";
 import { saveAs } from "file-saver";
 import { usePlayer } from "../Player.context";
-import lamejs from "lamejs";
+// import lamejs from "lamejs";
 export default function DownloadOptionsModal() {
   const {
     recordedFile,
@@ -16,9 +16,9 @@ export default function DownloadOptionsModal() {
     setIsDModal,
     audioFileName,
   } = usePlayer();
-  // async function convertWavToMp3(wavBlob) {
+  // const convertToMP3 = async (wavBlob) => {
   //   const arrayBuffer = await wavBlob.arrayBuffer();
-  //   console.log(wavBlob)
+  //   console.log(arrayBuffer);
   //   const wav = lamejs.WavHeader.readHeader(new DataView(arrayBuffer));
   //   const samples = new Int16Array(
   //     arrayBuffer,
@@ -28,14 +28,15 @@ export default function DownloadOptionsModal() {
 
   //   const mp3Encoder = new lamejs.Mp3Encoder(wav.channels, wav.sampleRate, 128);
   //   const mp3Data = [];
-  //   const sampleBlockSize = 1152;
+  //   let remaining = samples.length;
 
-  //   for (let i = 0; i < samples.length; i += sampleBlockSize) {
-  //     const sampleChunk = samples.subarray(i, i + sampleBlockSize);
-  //     const mp3buf = mp3Encoder.encodeBuffer(sampleChunk);
+  //   for (let i = 0; remaining >= 0; i += 1152) {
+  //     const left = samples.subarray(i, i + 1152);
+  //     const mp3buf = mp3Encoder.encodeBuffer(left);
   //     if (mp3buf.length > 0) {
   //       mp3Data.push(mp3buf);
   //     }
+  //     remaining -= 1152;
   //   }
 
   //   const mp3buf = mp3Encoder.flush();
@@ -43,12 +44,14 @@ export default function DownloadOptionsModal() {
   //     mp3Data.push(mp3buf);
   //   }
 
-  //   return new Blob(mp3Data, { type: "audio/mp3" });
-  // }
+  //   const blob = new Blob(mp3Data, { type: "audio/mp3" });
+  //   return blob;
+  // };
+
   const downloadAudioInWAV = async () => {
-    if (recordedFile) {
-      if (recordedFile.size > 0) {
-        // const blob = await convertWavToMp3(recordedFile);
+    if (recordedWAVFile) {
+      if (recordedWAVFile.size > 0) {
+        // const blob = await convertToMP3(recordedWAVFile);
         // console.log(blob);
         saveAs(recordedWAVFile, `${audioFileName}_adtta.wav`);
         setIsDModal(!isDModal);
@@ -63,7 +66,6 @@ export default function DownloadOptionsModal() {
       if (recordedFile.size > 0) {
         try {
           // Convert the WAV file to MP3 and save it
-          // const blob = await convertToMP3(recordedFile);
           saveAs(recordedFile, `${audioFileName}_adtta.mp3`);
           setIsDModal(!isDModal);
         } catch (error) {
