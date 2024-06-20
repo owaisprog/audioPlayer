@@ -286,19 +286,23 @@ export const usePlayer = () => {
   };
 
   const stopAudioRecording = async () => {
+    let blob1;
+    let blob2;
     if (recorderMP3Ref.current) {
       recorderMP3Ref.current.stopRecording(() => {
-        const blob = recorderMP3Ref.current.getBlob();
-        setRecordedFile(blob);
+        blob1 = recorderMP3Ref.current.getBlob();
       });
     }
     if (recorderWAVRef.current) {
       recorderWAVRef.current.stopRecording(() => {
-        const blob = recorderWAVRef.current.getBlob();
-        setRecordedWAVFile(blob);
+        blob2 = recorderWAVRef.current.getBlob();
       });
     }
-    setIsRecording(false);
+    setTimeout(() => {
+      setRecordedFile(blob1);
+      setRecordedWAVFile(blob2);
+      setIsRecording(false);
+    }, 3000);
   };
   const toggleMute = () => {
     if (gainNode) {
