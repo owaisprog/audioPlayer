@@ -240,11 +240,11 @@ export const usePlayer = () => {
   const recordAudio = () => {
     setIsRecording(true);
     pauseAudio();
-    shifter.percentagePlayed = 0; // Reset shifter's position to the start
-    playAudio()
+    shifter.percentagePlayed = 100; // Reset shifter's position to the start
+    playAudio();
     setProgress(0);
     setPlayHead("0:00");
-    shifter.off()
+    shifter.off();
     const fileReader = new FileReader();
     fileReader.onload = onLoad;
     try {
@@ -268,10 +268,10 @@ export const usePlayer = () => {
         recorderType: RecordRTC.StereoAudioRecorder,
         desiredSampRate: 16000,
       });
-
-      playAudio();
       recorderMP3Ref.current.startRecording();
       recorderWAVRef.current.startRecording();
+      playAudio();
+
       // Check shifter.percentagePlayed every second
       const intervalId = setInterval(() => {
         if (Math.round(shifter.percentagePlayed) === 100) {
@@ -286,7 +286,6 @@ export const usePlayer = () => {
   };
 
   const stopAudioRecording = async () => {
-    setIsRecording(false);
     if (recorderMP3Ref.current) {
       recorderMP3Ref.current.stopRecording(() => {
         const blob = recorderMP3Ref.current.getBlob();
@@ -299,6 +298,7 @@ export const usePlayer = () => {
         setRecordedWAVFile(blob);
       });
     }
+    setIsRecording(false);
   };
   const toggleMute = () => {
     if (gainNode) {
