@@ -281,20 +281,19 @@ const AudioPlayer = () => {
           style={{ backgroundImage: "url('elementi/Risorsa 16-9.png')" }}
         ></button>
       </div>
-      {!shifter && (
+      {!shifter && !isRecording && !recordedFile && (
         <Loader text={"Iniziamo! Carica un file audio"} loader={false} />
       )}
       {shifter && !isRecording && !recordedFile && (
         <Loader
-          text={"File caricato! Ascoltalo, modificalo e poi registra le modifiche"}
+          text={
+            "File caricato! Ascoltalo, modificalo e poi registra le modifiche"
+          }
           loader={false}
         />
       )}
       {isRecording && (
-        <Loader
-          text={"Conversione in corso. Attendi..."}
-          loader={true}
-        />
+        <Loader text={"Conversione in corso. Attendi..."} loader={true} />
       )}
       {recordedFile && (
         <Loader
