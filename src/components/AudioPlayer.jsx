@@ -286,13 +286,13 @@ const AudioPlayer = () => {
       )}
       {shifter && !isRecording && !recordedFile && (
         <Loader
-          text={"File caricato! Modificalo e poi registra le modifiche"}
+          text={"File caricato! Ascoltalo, modificalo e poi registra le modifiche"}
           loader={false}
         />
       )}
       {isRecording && (
         <Loader
-          // text={"File caricato! Modificalo e poi registra le modifiche"}
+          text={"Conversione in corso. Attendi..."}
           loader={true}
         />
       )}

@@ -14,6 +14,7 @@ export const PlayerProvider = ({ audioCtx, gainNode, ...props }) => {
   const [playing, setPlaying] = useState(false);
   const [isMute, setIsMute] = useState(false);
   const [tempo, setTempo] = useState(1.0);
+  const [audioFile, setAudioFile] = useState(null);
   const [pitch, setPitch] = useState(1.0);
   const [semitone, setSemitone] = useState(0);
   const [volume, setVolume] = useState(1.1);
@@ -42,6 +43,8 @@ export const PlayerProvider = ({ audioCtx, gainNode, ...props }) => {
       audioFileName,
       setAudioFileName,
       isRecording,
+      audioFile,
+      setAudioFile,
       setIsRecording,
       isMute,
       setIsMute,
@@ -75,6 +78,8 @@ export const PlayerProvider = ({ audioCtx, gainNode, ...props }) => {
       setIsDModal,
       recordedFile,
       setRecordedFile,
+      audioFile,
+      setAudioFile,
       audioFileName,
       setAudioFileName,
       recordedWAVFile,
@@ -115,6 +120,8 @@ export const usePlayer = () => {
     setIsMute,
     isDModal,
     setIsDModal,
+    audioFile,
+    setAudioFile,
     recordedFile,
     recordedWAVFile,
     setRecordedWAVFile,
@@ -178,6 +185,7 @@ export const usePlayer = () => {
 
   const loadFile = (file) => {
     setLoading(true);
+    setAudioFile(file);
     const fileName = file?.name.split(".").slice(0, -1).join(".");
     if (shifter) {
       setPlayHead("0:00");
@@ -231,11 +239,19 @@ export const usePlayer = () => {
   };
   const recordAudio = () => {
     setIsRecording(true);
-    setPlaying(false);
     pauseAudio();
     shifter.percentagePlayed = 0; // Reset shifter's position to the start
+    playAudio()
     setProgress(0);
     setPlayHead("0:00");
+    shifter.off()
+    const fileReader = new FileReader();
+    fileReader.onload = onLoad;
+    try {
+      fileReader.readAsArrayBuffer(audioFile);
+    } catch (err) {
+      alert(err);
+    }
     setTimeout(() => {
       const destination = audioCtx.createMediaStreamDestination();
       gainNode.connect(destination);
@@ -253,10 +269,7 @@ export const usePlayer = () => {
         desiredSampRate: 16000,
       });
 
-      setPlaying(true);
-      shifter.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
-      audioCtx.resume();
+      playAudio();
       recorderMP3Ref.current.startRecording();
       recorderWAVRef.current.startRecording();
       // Check shifter.percentagePlayed every second
