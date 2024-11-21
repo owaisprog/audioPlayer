@@ -25,11 +25,13 @@ const Header = () => {
             />
           </div>
           <div  >
-            <img
-              className="rounded-lg w-1/4 mb-16"
-              src={"/elementi/audioplayersideLogo.png"}
-              alt="Logo"
-            />
+            <a href="https://iwpiu.loescher.it/iswlogin">
+              <img
+                className="rounded-lg w-1/4 mb-16"
+                src={"/elementi/audioplayersideLogo.png"}
+                alt="Logo"
+              />
+            </a>
           </div>
         </div>
 
