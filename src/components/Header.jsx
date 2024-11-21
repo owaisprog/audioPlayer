@@ -8,7 +8,7 @@ const Header = () => {
       <div className=" absolute top-0 left-0 right-0 bottom-0 bg-white opacity-40 z-10"></div>
       <div
         className={`flex container top-0 left-0 right-0 absolute z-10 mx-auto p-4 justify-between items-center`}
-      >
+      >z
         <div className="w-1/3">
           <img
             className="rounded-lg"
@@ -16,13 +16,23 @@ const Header = () => {
             alt="Loescher Logo"
           />
         </div>
-        <div className="w-2/3 flex justify-center">
-          <img
-            className="rounded-lg w-1/2"
-            src={"/elementi/logo.png"}
-            alt="Logo"
-          />
+        <div className="flex justify-end items-center gap-5  ">
+          <div className="w-[45%] flex justify-center  ">
+            <img
+              className="rounded-lg w-full"
+              src={"/elementi/logo.png"}
+              alt="Logo"
+            />
+          </div>
+          <div  >
+            <img
+              className="rounded-lg w-1/4 mb-16"
+              src={"/elementi/audioplayersideLogo.png"}
+              alt="Logo"
+            />
+          </div>
         </div>
+
       </div>
     </section>
   );

@@ -13,7 +13,9 @@ export default function App() {
       <Header />
       <PlayerProvider {...{ audioCtx, gainNode }}>
         <Player />
-        <DownloadOptionsModal/>
+
+        <h2 className="text-center font-semibold mb-10">Questa comoda webapp ad accesso libero, messa a disposizione da Loescher e D’Anna Editori, non richiede installazione e ti permette <br /> di personalizzare tonalità e/o velocità di file mp3 e wav in pochi secondi, per poi scaricarli offline</h2>
+        <DownloadOptionsModal />
       </PlayerProvider>
     </div>
   );
